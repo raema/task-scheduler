@@ -52,7 +52,26 @@ func TestParseLineWithDependencies(t *testing.T) {
 	}
 }
 
-func TestExpectedTime(t *testing.T) {
+func TestExpectedTimeEmpty(t *testing.T) {
+	tasks := []Task{}
+	time := expectedTime(tasks)
+	if time != 0 {
+		t.Errorf("Expected 0, got %d", time)
+	}
+}
+func TestExpectedTimeSequential(t *testing.T) {
+	tasks := []Task{
+		{Name: "Task 1", Duration: 3, Dependencies: []string{}},
+		{Name: "Task 2", Duration: 2, Dependencies: []string{"Task 1"}},
+		{Name: "Task 3", Duration: 1, Dependencies: []string{"Task 2"}},
+		{Name: "Task 4", Duration: 4, Dependencies: []string{"Task 3"}},
+	}
+	time := expectedTime(tasks)
+	if time != 10 {
+		t.Errorf("Expected 10, got %d", time)
+	}
+}
+func TestExpectedTimeParallel(t *testing.T) {
 	tasks := []Task{
 		{Name: "Task 1", Duration: 3, Dependencies: []string{}},
 		{Name: "Task 2", Duration: 2, Dependencies: []string{"Task 1"}},
@@ -62,5 +81,38 @@ func TestExpectedTime(t *testing.T) {
 	time := expectedTime(tasks)
 	if time != 9 {
 		t.Errorf("Expected 9, got %d", time)
+	}
+}
+
+func TestRunEmpty(t *testing.T) {
+	tasks := []Task{}
+	time := run(tasks)
+	if time != 0 {
+		t.Errorf("Expected 0, got %d", time)
+	}
+}
+
+func TestRunSequential(t *testing.T) {
+	tasks := []Task{
+		{Name: "Task 1", Duration: 3, Dependencies: []string{}},
+		{Name: "Task 2", Duration: 2, Dependencies: []string{"Task 1"}},
+		{Name: "Task 3", Duration: 1, Dependencies: []string{"Task 2"}},
+		{Name: "Task 4", Duration: 4, Dependencies: []string{"Task 3"}},
+	}
+	time := run(tasks)
+	if time < 10 || time > 11 {
+		t.Errorf("Expected ~10, got %d", time)
+	}
+}
+
+func TestRunParallel(t *testing.T) {
+	tasks := []Task{
+		{Name: "Task 1", Duration: 1, Dependencies: []string{}},
+		{Name: "Task 2", Duration: 1, Dependencies: []string{}},
+		{Name: "Task 3", Duration: 1, Dependencies: []string{}},
+	}
+	time := run(tasks)
+	if time < 1 || time > 2 {
+		t.Errorf("Expected ~1 second, got %d", time)
 	}
 }

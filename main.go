@@ -3,6 +3,8 @@ package main
 import (
 	"strconv"
 	"strings"
+	"sync"
+	"time"
 )
 
 func main() {
@@ -85,4 +87,36 @@ func expectedTime(tasks []Task) int {
 		}
 	}
 	return totalTime
+}
+
+func run(tasks []Task) int {
+	startTime := time.Now()
+	done := make(map[string]chan struct{})
+
+	// initialize channels
+	for _, task := range tasks {
+		done[task.Name] = make(chan struct{})
+	}
+
+	var wg sync.WaitGroup
+	wg.Add(len(tasks))
+
+	// launch all tasks
+	for _, task := range tasks {
+		go func(t Task) {
+			defer wg.Done()
+
+			// Wait for dependencies
+			for _, dependency := range t.Dependencies {
+				<-done[dependency]
+			}
+
+			// Execute task
+			time.Sleep(time.Duration(t.Duration) * time.Second)
+			close(done[t.Name])
+		}(task)
+	}
+
+	wg.Wait()
+	return int(time.Since(startTime).Seconds())
 }
