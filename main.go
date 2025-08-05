@@ -1,6 +1,9 @@
 package main
 
 import (
+	"flag"
+	"fmt"
+	"os"
 	"strconv"
 	"strings"
 	"sync"
@@ -8,6 +11,43 @@ import (
 )
 
 func main() {
+	file := flag.String("file", "", "task file")
+	validate := flag.Bool("validate", false, "validate the task list")
+	run := flag.Bool("run", false, "run the task list")
+	flag.Parse()
+
+	if len(os.Args) < 2 {
+		flag.Usage()
+		os.Exit(0)
+	}
+
+	input := ""
+
+	if *file != "" {
+		data, err := os.ReadFile(*file)
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "error reading from file: %s\n", err)
+			os.Exit(0)
+		}
+		input = string(data)
+	}
+
+	tasks := parse(input)
+
+	if *validate {
+		time := expectedTime(tasks)
+		fmt.Printf("Expected time: %d\n", time)
+	}
+
+	if *run {
+		expectedTime := expectedTime(tasks)
+		runTime := runTasks(tasks)
+		difference := runTime - expectedTime
+		fmt.Printf("Run time: %d\n", runTime)
+		fmt.Printf("Expected time: %d\n", expectedTime)
+		fmt.Printf("Time difference: %d\n", difference)
+
+	}
 
 }
 
@@ -89,7 +129,7 @@ func expectedTime(tasks []Task) int {
 	return totalTime
 }
 
-func run(tasks []Task) int {
+func runTasks(tasks []Task) int {
 	startTime := time.Now()
 	done := make(map[string]chan struct{})
 
