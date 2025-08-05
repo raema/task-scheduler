@@ -21,15 +21,10 @@ func main() {
 		os.Exit(0)
 	}
 
-	input := ""
-
-	if *file != "" {
-		data, err := os.ReadFile(*file)
-		if err != nil {
-			fmt.Fprintf(os.Stderr, "error reading from file: %s\n", err)
-			os.Exit(0)
-		}
-		input = string(data)
+	input, err := readTaskFile(*file)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "error reading task file: %s\n", err)
+		os.Exit(0)
 	}
 
 	tasks := parse(input)
@@ -55,6 +50,18 @@ type Task struct {
 	Name         string
 	Duration     int
 	Dependencies []string
+}
+
+func readTaskFile(filename string) (string, error) {
+	if filename != "" {
+		data, err := os.ReadFile(filename)
+		if err != nil {
+			return "", fmt.Errorf("error reading from file: %s", err)
+		}
+		return string(data), nil
+	} else {
+		return "", nil
+	}
 }
 
 func parse(input string) []Task {

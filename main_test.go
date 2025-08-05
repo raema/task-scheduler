@@ -1,6 +1,9 @@
 package main
 
-import "testing"
+import (
+	"strings"
+	"testing"
+)
 
 func TestCreateTask(t *testing.T) {
 	task := Task{
@@ -114,5 +117,12 @@ func TestRunParallel(t *testing.T) {
 	time := runTasks(tasks)
 	if time < 1 || time > 2 {
 		t.Errorf("Expected ~1 second, got %d", time)
+	}
+}
+
+func TestMainReadTaskFile(t *testing.T) {
+	_, err := readTaskFile("file")
+	if !strings.Contains(err.Error(), "no such file or directory") {
+		t.Errorf("Expected 'no such file or directory' in error, got: %v", err)
 	}
 }
