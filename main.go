@@ -67,11 +67,21 @@ func parse(input string) []Task {
 
 	for _, line := range lines {
 		line = strings.TrimSpace(line)
+		if line == "" {
+			continue // skip empty lines
+		}
+
 		fields := strings.Split(line, ",")
+		if len(fields) < 2 {
+			fmt.Fprintf(os.Stderr, "skipping malformed line: %s\n", line)
+			os.Exit(1)
+		}
+
 		name := strings.TrimSpace(fields[0])
 		duration, err := strconv.Atoi(strings.TrimSpace(fields[1]))
 		if err != nil {
-			continue
+			fmt.Fprintf(os.Stderr, "invalid duration in line: %s\n", line)
+			os.Exit(1)
 		}
 
 		var dependencies []string
