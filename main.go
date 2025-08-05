@@ -38,9 +38,9 @@ func main() {
 		expectedTime := expectedTime(tasks)
 		runTime := runTasks(tasks)
 		difference := runTime - expectedTime
-		fmt.Printf("Run time: %d\n", runTime)
-		fmt.Printf("Expected time: %d\n", expectedTime)
-		fmt.Printf("Time difference: %d\n", difference)
+		fmt.Printf("Run time (sec): %d\n", runTime)
+		fmt.Printf("Expected time (sec): %d\n", expectedTime)
+		fmt.Printf("Time difference (sec): %d\n", difference)
 
 	}
 
