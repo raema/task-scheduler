@@ -86,7 +86,7 @@ func TestExpectedTimeParallel(t *testing.T) {
 
 func TestRunEmpty(t *testing.T) {
 	tasks := []Task{}
-	time := run(tasks)
+	time := runTasks(tasks)
 	if time != 0 {
 		t.Errorf("Expected 0, got %d", time)
 	}
@@ -99,7 +99,7 @@ func TestRunSequential(t *testing.T) {
 		{Name: "Task 3", Duration: 1, Dependencies: []string{"Task 2"}},
 		{Name: "Task 4", Duration: 4, Dependencies: []string{"Task 3"}},
 	}
-	time := run(tasks)
+	time := runTasks(tasks)
 	if time < 10 || time > 11 {
 		t.Errorf("Expected ~10, got %d", time)
 	}
@@ -111,7 +111,7 @@ func TestRunParallel(t *testing.T) {
 		{Name: "Task 2", Duration: 1, Dependencies: []string{}},
 		{Name: "Task 3", Duration: 1, Dependencies: []string{}},
 	}
-	time := run(tasks)
+	time := runTasks(tasks)
 	if time < 1 || time > 2 {
 		t.Errorf("Expected ~1 second, got %d", time)
 	}
