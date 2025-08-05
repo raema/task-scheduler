@@ -39,9 +39,9 @@ Task 3, 2, Task 2
 Expected time: 5
 
 ./task-scheduler -file examples/taskfile -run     
-Run time: 5
-Expected time: 5
-Difference: 0
+Run time (sec): 5
+Expected time (sec): 5
+Difference (sec): 0
 ```
 ## Test
 ```sh
