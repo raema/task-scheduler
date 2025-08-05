@@ -35,10 +35,10 @@ Task 3, 2, Task 2
 
 ## Example Run
 ```sh
-./task-scheduler -file taskfile -validate
+./task-scheduler -file examples/taskfile -validate
 Expected time: 5
 
-./task-scheduler -file taskfile -run     
+./task-scheduler -file examples/taskfile -run     
 Run time: 5
 Expected time: 5
 Difference: 0
