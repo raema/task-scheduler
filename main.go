@@ -140,6 +140,15 @@ func expectedTime(tasks []Task) int {
 }
 
 func runTasks(tasks []Task) int {
+	// * save start time at beginning of runTasks
+	// * create a map of channel structs for tracking signals
+	// * create a channel in the map for each task
+	// * create WaitGroup to track goroutine completion
+	// * launch each task in parallel
+	// * tasks wait for each dependency to signal done via channel before running
+	// * WaitGroup waits for all goroutines to be Done
+	// * return actual runtime since start time of runTasks
+
 	startTime := time.Now()
 	done := make(map[string]chan struct{})
 
